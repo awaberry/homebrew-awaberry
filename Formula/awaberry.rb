@@ -31,21 +31,24 @@ class Awaberry < Formula
   end
 
   def post_install
-    # Run the awaberry client installer
-    system opt_bin/"awaberry"
+    # Run the awaberry client installer.
+    # quiet_system is used so a non-zero exit does NOT abort post_install.
+    quiet_system opt_bin/"awaberry"
 
-    # Auto-start the service so it survives reboots
-    system HOMEBREW_PREFIX/"bin/brew", "services", "start", "awaberry"
+    # Always start the service, regardless of what the installer returned.
+    quiet_system HOMEBREW_PREFIX/"bin/brew", "services", "start", "awaberry"
   end
 
   def caveats
     <<~EOS
-      awaberry has been installed and the background service has been started.
+      awaberry client installer has run and the background service has been started.
+
+      To verify the service is running:
+        brew services list
 
       Useful commands:
         brew services start awaberry   – start  (and enable autostart on login)
         brew services stop  awaberry   – stop   (and disable autostart)
-        brew services list             – show service status
     EOS
   end
 
