@@ -24,20 +24,16 @@ class Awaberry < Formula
     launcher = libexec/"awaberry"
     launcher.write <<~EOS
       #!/bin/bash
-      "$HOME/awaberry/awaberryclient/update/update.sh" && \\
+      # Run update if it exists (non-fatal - do not block the client on failure)
+      if [ -x "$HOME/awaberry/awaberryclient/update/update.sh" ]; then
+        "$HOME/awaberry/awaberryclient/update/update.sh" || true
+      fi
+      # Replace this shell process with the client (exec = no extra process layer)
       exec "$HOME/awaberry/awaberryclient/app/runawaberryclient.sh"
     EOS
     chmod 0755, launcher
   end
 
-  def post_install
-    # Run the awaberry client installer.
-    # quiet_system is used so a non-zero exit does NOT abort post_install.
-    quiet_system opt_bin/"awaberry"
-
-    # Always start the service, regardless of what the installer returned.
-    quiet_system HOMEBREW_PREFIX/"bin/brew", "services", "start", "awaberry"
-  end
 
   def caveats
     <<~EOS
