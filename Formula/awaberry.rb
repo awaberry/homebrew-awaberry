@@ -30,6 +30,25 @@ class Awaberry < Formula
     chmod 0755, launcher
   end
 
+  def post_install
+    # Run the awaberry client installer
+    system opt_bin/"awaberry"
+
+    # Auto-start the service so it survives reboots
+    system HOMEBREW_PREFIX/"bin/brew", "services", "start", "awaberry"
+  end
+
+  def caveats
+    <<~EOS
+      awaberry has been installed and the background service has been started.
+
+      Useful commands:
+        brew services start awaberry   – start  (and enable autostart on login)
+        brew services stop  awaberry   – stop   (and disable autostart)
+        brew services list             – show service status
+    EOS
+  end
+
   # brew services list                   – list services
   # brew services start awaberry         – start & register autostart on login/reboot
   # brew services stop  awaberry         – stop & unregister autostart
