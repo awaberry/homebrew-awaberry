@@ -14,8 +14,8 @@ class Awaberry < Formula
   depends_on "openjdk@21"
 
   def install
-    bin.install "macbrewinstaller.sh" => "awaberry"
-    chmod 0755, bin/"awaberry"
+    # Execute the installer script (links device, generates certs, installs client)
+    system "bash", "macbrewinstaller.sh"
 
     # Create a named service launcher in libexec.
     # macOS uses the binary basename as the background-item display name,
